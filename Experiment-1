@@ -1,1 +1,39 @@
-# 23MS0049
+#include<stdio.h>
+#include<math.h>
+
+int main()
+{
+	int i,j,n,m;
+	float u[10][10];
+	float r=0.5;
+	printf("\nEnter the value of columns n :");
+	scanf("%d",&n);
+	printf("\nEnter the value of rows m :");
+	scanf("%d",&m);
+	for(i=0; i<m; i++)
+	{
+		u[0][i]=0;
+		u[9][i]=0;
+	}
+	for(i=1; i<n-1; i++)
+	{
+		u[i][0]=(4*i-(i*i)/2.0);
+	}
+	for(j=0; j<m; j++)
+	{
+		for(i=1; i<n-1; i++)
+		{
+			u[i][j+1]=r*u[i-1][j]+(1-2*r)*u[i][j]+r*u[i+1][j];
+		}
+	}
+	printf("The values are :\n");
+	for(j=0; j<m; j++)
+	{
+		for(i=0; i<n; i++)
+		{
+			printf("%f ",u[i][j]);
+		}
+		printf("\n");
+	}
+	return 0;
+}
