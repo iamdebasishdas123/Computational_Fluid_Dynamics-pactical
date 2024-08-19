@@ -1,0 +1,52 @@
+#include<iostream>
+#include<cmath>
+#include<iomanip>
+using namespace std;
+float func(float x){
+    return ((x/2)*(8-x));
+}
+int main(){
+    int i,j,m=5,n=8;
+    float u[20][20],r,h,k,e,temp;
+    int c=4;
+    cout<<"Enter value of dx: "<<endl;
+    cin>>h;
+    cout<<"Enter value of dt: "<<endl;
+    cin>>k;
+    r=c*k/(h*h);
+    cout<<"The value of r is : "<<r<<endl;
+    cout<<fixed<<setprecision(2);
+    for(j=0;j<=m;j++){
+        u[0][j]=0;
+        u[n][j]=0;
+    }
+    for(i=1;i<n;i++){
+        u[i][0]=func(i*h);
+    }
+    for(j=1;j<=m;j++){
+        for(i=1;i<n;i++){
+            u[i][j]=0;
+        }
+    }
+    for(j=0;j<m;j++){
+        bool flag = true;
+        while(flag == true){
+            flag=false;
+            for(i=1;i<n;i++){
+                temp=u[i][j+1];
+                u[i][j+1]=(r*u[i-1][j+1]+r*(u[i+1][j+1])+u[i][j])/(1+2*r);
+                e=abs(temp-u[i][j+1]);
+                if(e>0.001){
+                    flag=true;
+                }
+            }
+        }
+    }
+    for(j=0;j<=m;j++){
+        for(i=0;i<=n;i++){
+            cout<<u[i][j]<<"\t\t";
+        }
+        cout<<endl;
+    }
+    return 0;
+}
