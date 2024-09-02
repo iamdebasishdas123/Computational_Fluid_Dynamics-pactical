@@ -1,0 +1,71 @@
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+void initialize(double u[], double h, int m) {
+    for (int i = 0; i < m; i++) {
+        double x = i * h;
+        u[i] =  10*x*(5-x);
+    }
+}
+void tridiagonal(double a[], double b[], double c[], double d[], double u[], int m) {
+    for (int i = 1; i < m; i++) {
+        double alpha = a[i] / b[i - 1];
+        b[i] = b[i] - alpha * c[i - 1];
+        d[i] = d[i] - alpha * d[i - 1];
+    }
+    u[m - 1] = d[m - 1] / b[m - 1];
+    for (int i = m - 2; i >= 0; i--) {
+        u[i] = (d[i] - c[i] * u[i + 1]) / b[i];
+    }
+}
+void implicit(double u[], double r, int m) {
+    double a[m - 2];
+    double b[m - 2];
+    double c[m - 2];
+    double d[m - 2];
+    double u_new[m - 2];
+
+    for (int i = 0; i < m - 2; i++) {
+        a[i] = -r;
+        b[i] = 2 + 2 * r;
+        c[i] = -r;
+    }
+    for (int i = 1; i < m - 1; i++) {
+        d[i - 1] = r * u[i - 1] + (2 - 2 * r) * u[i] + r * u[i + 1];
+    }
+
+    tridiagonal(a, b, c, d, u_new, m - 2);
+
+    for (int i = 1; i < m - 1; i++) {
+        u[i] = u_new[i - 1];
+    }
+}
+
+int main() {
+    double h, k, c, r;
+    int m, n;
+    cout << "Enter the values of m, n, h, k, c: ";
+    cin >> m >> n >> h >> k >> c;
+
+    double u[m];
+    r = (c * k) / (h * h);
+    initialize(u, h, m);
+
+    cout << fixed << setprecision(2);
+    for (int i = 0; i < m; i++) {
+        cout << u[i] << "  ";
+    }
+    cout << endl;
+
+    for (int j = 0; j < n; j++) {
+        implicit(u, r, m);
+        u[0] = 0.0;
+        u[m - 1] = 0.0;
+        for (int i = 0; i < m; i++) {
+            cout << u[i] << "  ";
+        }
+        cout << endl;
+    }
+    return 0;
+}
