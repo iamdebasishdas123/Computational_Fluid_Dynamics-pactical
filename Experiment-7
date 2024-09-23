@@ -1,0 +1,79 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define SIZE 4 // Fixed grid size for 4x4 matrix
+
+// Function to perform the Jacobi iteration for 2D Laplace equation
+void jacobi(float u[SIZE][SIZE], int iterations) {
+    float u_new[SIZE][SIZE];
+
+    for (int iter = 0; iter < iterations; ++iter) {
+        // Update values using Jacobi iteration
+        for (int i = 0; i < SIZE; ++i) {
+            for (int j = 0; j < SIZE; ++j) {
+                if (i > 0 && i < SIZE - 1 && j > 0 && j < SIZE - 1) {
+                    u_new[i][j] = 0.25 * (u[i + 1][j] + u[i - 1][j] + u[i][j + 1] + u[i][j - 1]);
+                } else {
+                    u_new[i][j] = u[i][j]; // Copy boundary values
+                }
+            }
+        }
+
+        // Copy new values back to u
+        for (int i = 0; i < SIZE; ++i) {
+            for (int j = 0; j < SIZE; ++j) {
+                u[i][j] = u_new[i][j];
+            }
+        }
+
+        // Print the matrix after each iteration
+        printf("Iteration %d:\n", iter + 1);
+        for (int i = 0; i < SIZE; ++i) {
+            for (int j = 0; j < SIZE; ++j) {
+                printf("%7.2f\t", u[i][j]);
+            }
+            printf("\n");
+        }
+        printf("\n");
+    }
+}
+
+int main() {
+    int iterations;
+    float u[SIZE][SIZE] = {0}; // Initialize all values to zero
+
+    printf("Enter the number of iterations: ");
+    scanf("%d", &iterations);
+
+    // Input boundary conditions
+    printf("Enter the boundary conditions:\n");
+    
+    // Top boundary
+    printf("Top boundary (4 values): ");
+    for (int j = 0; j < SIZE; ++j) {
+        scanf("%f", &u[0][j]); // Top row
+    }
+
+    // Bottom boundary
+    printf("Bottom boundary (4 values): ");
+    for (int j = 0; j < SIZE; ++j) {
+        scanf("%f", &u[SIZE - 1][j]); // Bottom row
+    }
+
+    // Left middle boundary
+    printf("Left middle boundary (2 values): ");
+    for (int i = 1; i < SIZE - 1; ++i) {
+        scanf("%f", &u[i][0]); // Left column
+    }
+
+    // Right middle boundary
+    printf("Right middle boundary (2 values): ");
+    for (int i = 1; i < SIZE - 1; ++i) {
+        scanf("%f", &u[i][SIZE - 1]); // Right column
+    }
+
+    // Solve using Jacobi iteration
+    jacobi(u, iterations);
+
+    return 0;
+}
